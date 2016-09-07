@@ -1,0 +1,186 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+
+
+<dom-module id="big-list-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+        height: 100vh;
+        margin: 0 auto;
+        padding: 0 1rem;
+        display: flex;
+        flex-direction: column;
+        max-width: 50rem;
+      }
+      .config {
+        flex-grow: 0;
+      }
+      p, paper-input, paper-button {
+        display: inline-block;
+      }
+      iron-list {
+        flex-grow: 1;
+      }
+      .item {
+        padding: 0.2rem;
+        border-bottom: #999 solid 1px;
+      }
+      .heading {
+        padding-top: 1rem;
+        font-weight: bold;
+        border-bottom: black solid 1px;
+      }
+      span {
+        display: inline-block;
+      }
+      .index { width: 5rem; }
+      .name  { width: 10rem; }
+      .year  { width: 7rem; }
+    </style>
+    <div class="config">
+      <h2>Large List Demo</h2>
+      <paper-input type="number" value="{{_genSize}}" label="Number of entries">
+      </paper-input>
+      <paper-button raised disabled="{{_working}}" on-tap="_generate">
+        Generate
+      </paper-button>
+      <p>
+        Dataset size: {{_currentSize}}, 
+        filtered: {{_filteredDataSet.length}}
+      </p>
+      <paper-checkbox checked="{{_filterYear}}">Born after 1600</paper-checkbox>
+      <div class="item heading">
+        <span class="index">Index</span>
+        <span class="name">First Name</span>
+        <span class="name">Last Name</span>
+        <span class="year">Birth</span>
+        <span class="year">Death</span>
+      </div>
+    </div>
+
+    <iron-list items="[[_filteredDataSet]]" as="item">
+      <template>
+        <div class="item">
+          <span class="index">#[[index]]</span>
+          <span class="name">[[item.firstName]]</span>
+          <span class="name">[[item.lastName]]</span>
+          <span class="year">[[item.birth]]</span>
+          <span class="year">[[item.death]]</span>
+        </div>
+      </template>
+    </iron-list>
+
+    <paper-dialog id="working">
+      <h2>Working...</h2>
+    </paper-dialog>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'big-list-app',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'big-list-app',
+        },
+        _genSize: {
+          type: Number,
+          value: '800',
+        },
+        _working: {
+          type: Boolean,
+          value: false,
+        },
+        _filterYear: {
+          type: Boolean,
+          value: false,
+        },
+
+        _currentSize: {
+          type: Number,
+          value: '',
+        },
+
+        _dataSet: {
+          type: Array,
+          value: [],
+        },
+        _filteredDataSet: {
+          type: Array,
+          value: [],
+        },
+      },
+
+      observers: [
+        '_filterItems(_dataSet, _filterYear)'
+        ],
+
+      _filterItems: function() {
+        this.set('_filteredDataSet', this._dataSet.filter(function (item) {
+          if (this._filterYear) {
+            return item.birth > 1600;
+          } else {
+            return true;
+          }
+        }.bind(this) ));
+      },
+
+      _generate: function() {
+        // promise for generating data array
+        var generator = new Promise(function(resolve, reject) {
+          var tempArray= [];
+          var birth, death;
+
+          function genNumber(min, max) {
+            return Math.random() * (max - min) + min;
+          }
+
+          function genName() {
+            var text = "";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+            for ( var i = 0; i < 6; i++ )
+              text += possible.charAt(Math.floor(Math.random() * possible.length));
+            return text;
+          }
+
+          for ( var a = 0; a < this._genSize; a++ ) {
+            birth = genNumber(1200, 2000).toFixed(0);
+            death = (parseFloat(birth) + genNumber(0, 100)).toFixed(0);
+            tempArray.push({ 
+              firstName: genName(), lastName: genName(),
+              birth: birth, death: death
+            });
+          }
+          resolve(tempArray);
+        }.bind(this));
+
+        // use promise to generate data async
+        this.$.working.toggle();
+        generator.then(function(result) {
+          this.set('_dataSet', result);
+          // Store the current size of the dataset
+          this.set('_currentSize', this._genSize);
+          this.$.working.toggle();
+        }.bind(this), function(err) {
+          console.log(err);
+        }.bind(this));
+
+      },
+
+      // Call the generate function when we are ready
+      ready: function() {
+        this._generate();
+      }
+
+    });
+  </script>
+</dom-module>
