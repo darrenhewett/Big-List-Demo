@@ -12,7 +12,6 @@
   <template>
     <style>
       :host {
-        display: block;
         height: 100vh;
         margin: 0 auto;
         padding: 0 1rem;
@@ -47,18 +46,24 @@
     </style>
     <div class="config">
       <h2>Large List Demo</h2>
-      <paper-input label="First Name" value="{{filterFirstName}}"></paper-input>
-      <paper-input label="Last Name" value="{{filterLastName}}"></paper-input>
+
+      <paper-input label="First Name" on-keypress="keyPressed" 
+        value="{{filterFirstName}}"></paper-input>
+      <paper-input label="Last Name" on-keypress="keyPressed" 
+        value="{{filterLastName}}"></paper-input>
+
       <paper-icon-button 
         icon="icons:filter-list" on-tap="runFilter">
       </paper-icon-button>
       <paper-icon-button 
         icon="icons:clear" on-tap="clearFilter">
       </paper-icon-button>
+
       <p>
-        Dataset size: {{_currentSize}}, 
-        filtered: {{_filteredDataSet.length}}
+        Dataset size: {{currentSize}}, 
+        filtered: {{filteredDataSet.length}}
       </p>
+
       <div class="item heading">
         <span class="index">Index</span>
         <span class="name">First Name</span>
@@ -75,7 +80,7 @@
       on-response="handleResponse"
       debouce-duration="300"></iron-ajax>
 
-    <iron-list items="[[_filteredDataSet]]" as="item">
+    <iron-list items="[[filteredDataSet]]" as="item">
       <template>
         <div class="item">
           <span class="index">#[[index]]</span>
@@ -103,16 +108,16 @@
           value: '',
         },
 
-        _currentSize: {
+        currentSize: {
           type: Number,
           value: '',
         },
 
-        _dataSet: {
+        dataSet: {
           type: Array,
           value: [],
         },
-        _filteredDataSet: {
+        filteredDataSet: {
           type: Array,
           value: [],
         },
@@ -121,6 +126,12 @@
       observers: [
         ],
 
+      keyPressed: function(e) {
+        if ( e.keyCode === 13 ) {
+          this.runFilter(e);
+        }
+      },
+
       clearFilter: function() {
         this.set('filterFirstName', '');
         this.set('filterLastName', '');
@@ -128,7 +139,7 @@
       },
 
       runFilter: function() {
-        this.set('_filteredDataSet', this._dataSet.filter(function (item) {
+        this.set('filteredDataSet', this.dataSet.filter(function (item) {
           var test = true;
           // First name filter test
           if ( this.filterFirstName.length > 0 ) {
@@ -151,8 +162,8 @@
       },
 
       handleResponse: function(e) {
-        this.set('_dataSet', e.detail.response.data);
-        this.set('_currentSize', e.detail.response.data.length);
+        this.set('dataSet', e.detail.response.data);
+        this.set('currentSize', e.detail.response.data.length);
         this.runFilter();
       },
 

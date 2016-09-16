@@ -16,7 +16,7 @@ var generator = new Promise(function(resolve, reject) {
     return text;
   }
 
-  for ( var a = 0; a < 1e6; a++ ) {
+  for ( var a = 0; a < 7e5; a++ ) {
     birth = genNumber(1200, 2000).toFixed(0);
     death = (parseFloat(birth) + genNumber(0, 100)).toFixed(0);
     tempArray.push({ 

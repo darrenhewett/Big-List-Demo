@@ -1,6 +1,6 @@
 {
-  "name": "big-list",
-  "short_name": "big-list",
+  "name": "big-list-demo",
+  "short_name": "big-list-demo",
   "start_url": "/",
   "display": "standalone"
 }
