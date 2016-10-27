@@ -10,20 +10,20 @@ Data is generated randomly and stored in a JSON file on the server, loaded into
 an `iron-list` element and filtered client side.
 
 :warning: This is not production ready code and is not guaranteed to work on 
-any browsers but has been tested on Chrome. 
+any browsers, but it has been tested on Chrome. 
 
 Note that the data is all loaded on page-load. This is far from ideal for most
 webhosting conditions but the intended use case of this proof of concept is 
 local hosting in a kiosk type environment where even large files will load
-quickly. The `iron-list` [link] (https://elements.polymer-project.org/elements/iron-list, "documentation") 
+quickly. The `iron-list` [documentation] (https://elements.polymer-project.org/elements/iron-list, "documentation") 
 advises against loading all the data at once.
 
 ## Installation
 
-Requires [link] (https://bower.io, "bower") and [link] (https://www.polymer-project.org/1.0/docs/tools/polymer-cli, 
+Requires [bower] (https://bower.io, "bower") and [polymer-cli] (https://www.polymer-project.org/1.0/docs/tools/polymer-cli, 
 "polymer-cli"), to install and run a local server:
 ```bash
-$ git clone XXX
+$ git clone https://github.com/darrenhewett/Big-List-Demo.git
 $ bower install
 $ polymer serve
 ```
