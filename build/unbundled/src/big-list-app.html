@@ -1,0 +1,105 @@
+<html><head><link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner-lite.html">
+
+</head><body><dom-module id="big-list-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+        margin: 0 auto;
+        padding: 0 1rem;
+        max-width: 50rem;
+      }
+      paper-input, paper-button {
+        display: inline-block;
+      }
+      iron-list {
+        height: 20rem;
+      }
+      .item {
+        padding: 0.2rem;
+        border-bottom: #999 solid 1px;
+      }
+      .heading {
+        padding-top: 1rem;
+        font-weight: bold;
+        border-bottom: black solid 1px;
+      }
+      span {
+        display: inline-block;
+      }
+      .index { width: 5rem; }
+      .name  { width: 10rem; }
+      .year  { width: 7rem; }
+      #loading {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 10;
+      }
+      #spinner { padding: 1rem; }
+    </style>
+
+    <div id="loading">
+      <paper-spinner-lite id="spinner" alt="Loading data" active="">
+      </paper-spinner-lite>
+      <p>Loading database...</p>
+    </div>
+
+    <div class="config">
+      <h2>Big List Demo</h2>
+
+      <paper-input label="First Name" on-keypress="keyPressed" value="{{filterFirstName}}"></paper-input>
+      <paper-input label="Last Name" on-keypress="keyPressed" value="{{filterLastName}}"></paper-input>
+
+      <paper-icon-button alt="Filter" icon="icons:filter-list" on-tap="runFilter">
+      </paper-icon-button>
+      <paper-icon-button alt="Clear Filter" icon="icons:clear" on-tap="clearFilter">
+      </paper-icon-button>
+
+      <p>
+        Dataset size: {{currentSize}}, 
+        filtered: {{filteredDataSet.length}}
+      </p>
+
+      <div class="item heading">
+        <span class="index">Index</span>
+        <span class="name">First Name</span>
+        <span class="name">Last Name</span>
+        <span class="year">Birth</span>
+        <span class="year">Death</span>
+      </div>
+    </div>
+
+    <iron-ajax auto="" url="/data.json" handle-as="json" on-response="handleResponse" debouce-duration="300"></iron-ajax>
+
+    <iron-list items="[[filteredDataSet]]" as="item">
+      <template>
+        <div class="item">
+          <span class="index">#[[index]]</span>
+          <span class="name">[[item.firstName]]</span>
+          <span class="name">[[item.lastName]]</span>
+          <span class="year">[[item.birth]]</span>
+          <span class="year">[[item.death]]</span>
+        </div>
+      </template>
+    </iron-list>
+  </template>
+
+  <script>Polymer({is:"big-list-app",properties:{filterFirstName:{type:String,value:""},filterLastName:{type:String,value:""},currentSize:{type:Number,value:""},dataSet:{type:Array,value:[]},filteredDataSet:{type:Array,value:[]}},observers:[],keyPressed:function(e){13===e.keyCode&&this.runFilter(e)},clearFilter:function(){this.set("filterFirstName",""),this.set("filterLastName",""),this.runFilter()},runFilter:function(){this.set("filteredDataSet",this.dataSet.filter(function(e){var t=!0;return this.filterFirstName.length>0&&(e.firstName.toUpperCase().includes(this.filterFirstName.toUpperCase())||(t=!1)),this.filterLastName.length>0&&(e.lastName.toUpperCase().includes(this.filterLastName.toUpperCase())||(t=!1)),t}.bind(this)))},handleResponse:function(e){this.set("dataSet",e.detail.response.data),this.set("currentSize",e.detail.response.data.length),this.runFilter(),this.$.loading.style.display="none",this.$.spinner.active=!1}});</script>
+</dom-module>
+</body></html>
