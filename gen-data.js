@@ -37,7 +37,6 @@ generator.then(function(result) {
   fs.writeFile('data.json', stringData,
   function (err) {
     if (err) return console.log(err);
-    console.log('File write')
   });
 }, function(err) {
   console.log(err);

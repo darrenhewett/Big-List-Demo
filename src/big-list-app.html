@@ -7,6 +7,7 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner-lite.html">
 
 <dom-module id="big-list-app">
   <template>
@@ -38,7 +39,27 @@
       .index { width: 5rem; }
       .name  { width: 10rem; }
       .year  { width: 7rem; }
+      #loading {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 10;
+      }
+      #spinner { padding: 1rem; }
     </style>
+
+    <div id="loading">
+      <paper-spinner-lite id="spinner" alt="Loading data" active>
+      </paper-spinner-lite>
+      <p>Loading database...</p>
+    </div>
+
     <div class="config">
       <h2>Large List Demo</h2>
 
@@ -47,10 +68,10 @@
       <paper-input label="Last Name" on-keypress="keyPressed" 
         value="{{filterLastName}}"></paper-input>
 
-      <paper-icon-button 
+      <paper-icon-button alt="Filter"
         icon="icons:filter-list" on-tap="runFilter">
       </paper-icon-button>
-      <paper-icon-button 
+      <paper-icon-button alt="Clear Filter"
         icon="icons:clear" on-tap="clearFilter">
       </paper-icon-button>
 
@@ -121,6 +142,7 @@
       observers: [
         ],
 
+      /* Grab enter key and run filter when pressed */
       keyPressed: function(e) {
         if ( e.keyCode === 13 ) {
           this.runFilter(e);
@@ -160,10 +182,9 @@
         this.set('dataSet', e.detail.response.data);
         this.set('currentSize', e.detail.response.data.length);
         this.runFilter();
+        this.$.loading.style.display = "none"; // remove overlay
+        this.$.spinner.active = false; // Turn off the spinner
       },
-
-      ready: function() {
-      }
 
     });
   </script>
