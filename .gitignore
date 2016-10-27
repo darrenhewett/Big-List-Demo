@@ -1,3 +1,3 @@
-bower_components/
-data.json
+/bower_components/
+/data.json
 .DS_Store
