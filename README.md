@@ -20,19 +20,18 @@ advises against loading all the data at once.
 
 ## Installation
 
-Requires [link] (https://www.polymer-project.org/1.0/docs/tools/polymer-cli, 
+Requires [link] (https://bower.io, "bower") and [link] (https://www.polymer-project.org/1.0/docs/tools/polymer-cli, 
 "polymer-cli"), to install and run a local server:
 ```bash
 $ git clone XXX
-$ npm install
+$ bower install
 $ polymer serve
 ```
 
 ## TODO
 
-* Spinner to indicate activiy while the data file is loading
 * Pretty up the CSS for the `iron-list` table
 * Port the code to Polymer 2.0 elements when the iron-list element supports 
 this
-* Add polyfills and test ensure compatibility across at least the evergreen 
+* Add polyfills and test to ensure compatibility across at least the evergreen 
 browsers (after porting to Polymer 2.0)
