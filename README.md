@@ -25,6 +25,7 @@ Requires [bower] (https://bower.io, "bower") and [polymer-cli] (https://www.poly
 ```bash
 $ git clone https://github.com/darrenhewett/Big-List-Demo.git
 $ bower install
+$ node gen-data.js
 $ polymer serve
 ```
 
